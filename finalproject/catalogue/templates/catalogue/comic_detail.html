@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ comic.title }}</h1>
+  <img src="{{ comic.image.url }}" alt="{{ comic.title }}" style="width: 30%; height: auto;">
+  <p>{{ comic.description }}</p>
+
+  {% if user.is_authenticated %}
+    <!-- Placeholder button for adding to cart -->
+    <form method="post" action="#">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Add to Cart (placeholder)</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'accounts:login' %}">Login</a> to add this comic to your cart.</p>
+  {% endif %}
+{% endblock %}
