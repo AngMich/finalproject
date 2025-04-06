@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title text-center mb-4">
+            {% if editing %}Edit Comic{% else %}Add New Comic{% endif %}
+          </h2>
+
+          {% if message %}
+            <div class="alert alert-success text-center">{{ message }}</div>
+          {% endif %}
+
+          <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="text-center mt-3">
+              <button type="submit" class="btn btn-primary">
+                {% if editing %}Save Changes{% else %}Add Comic{% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3>All Comics</h3>
+      <div class="row">
+        {% for comic in comics %}
+          <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+              <img src="{{ comic.image.url }}" class="card-img-top" alt="{{ comic.title }}">
+              <div class="card-body">
+                <h5 class="card-title">{{ comic.title }}</h5>
+                <p class="card-text">{{ comic.author }}</p>
+                <p class="card-text"><strong>{{ comic.price }}€</strong></p>
+                <a href="{% url 'accounts:edit_comic' comic.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+      <div class="card shadow-sm mt-4">
+        <div class="card-body text-center">
+          <h2 class="card-title">Welcome, <strong>{{ user.username }}</h2>
+          <p class="card-text">This is your Profile</strong>!</p>
+          <p class="card-text">Do you want to logout?</p>
+          <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

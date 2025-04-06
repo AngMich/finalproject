@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card p-4 shadow-sm mx-auto bg-dark" style="max-width: 500px;">
+  <h3 class="card-title text-danger">Are you sure you want to log out?</h3>
+  <p class="card-text text-light">Click "YES" to log out or go back to continue browsing.</p>
+
+  <form action="{% url 'accounts:logout' %}" method="post" class="mt-3 text-center">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">YES</button>
+    <a href="{% url 'catalogue:catalogue' %}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}
