@@ -1,17 +1,28 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
-  <h1>{{ comic.title }}</h1>
-  <img src="{{ comic.image.url }}" alt="{{ comic.title }}" style="width: 30%; height: auto;">
-  <p>{{ comic.description }}</p>
+<link rel="stylesheet" href="{% static 'catalogue/styles.css' %}">
 
-  {% if user.is_authenticated %}
-    <!-- Placeholder button for adding to cart -->
-    <form method="post" action="#">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary">Add to Cart (placeholder)</button>
-    </form>
-  {% else %}
-    <p><a href="{% url 'accounts:login' %}">Login</a> to add this comic to your cart.</p>
-  {% endif %}
+<div class="container">
+  <h1 class="mb-4">{{ comic.title }}</h1>
+  <div class="row align-items-start">
+    <div class="col-md-4 mb-3">
+      <img src="{{ comic.image.url }}" alt="{{ comic.title }}" class="img-fluid rounded shadow">
+    </div>
+    <div class="col-md-8 mb-4">
+      <p><strong>Writer:</strong> {{ comic.author }}</p>
+        <p><strong>Price:</strong> {{ comic.price }}€</p>
+        <p class="description">{{ comic.description }}</p>
+
+        {% if user.is_authenticated %}
+          <form method="post" action="{% url 'cart:add_to_cart' comic.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Add to Cart</button>
+          </form>
+        {% else %}
+          <p><a href="{% url 'accounts:login' %}">Login</a> to add this comic to your cart.</p>
+        {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}
