@@ -18,6 +18,20 @@ def add_to_cart(request, comic_id):
     return redirect('cart:view_cart')
 
 @login_required
+def update_quantity(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    if request.method == 'POST':
+        try:
+            quantity = int(request.POST.get('quantity'))
+            if quantity > 0:
+                item.quantity = quantity
+                item.save()
+        except (ValueError, TypeError):
+            pass
+    return redirect('cart:view_cart')
+
+
+@login_required
 def remove_from_cart(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()

@@ -7,8 +7,14 @@
     <li class="list-group-item d-flex justify-content-between align-items-center cart-item">
       <div>
         <strong>{{ item.comic.title }}</strong><br>
-        Quantity: <span class="item-qty">{{ item.quantity }}</span><br>
-        Price per item: <span class="item-price">{{ item.comic.price }}</span>€<br>
+        <form method="post" action="{% url 'cart:update_quantity' item.id %}" class="d-inline">
+          {% csrf_token %}
+          Quantity:
+          <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control d-inline" style="width: 80px;">
+          <button type="submit" class="btn btn-sm btn-outline-primary ms-2">Update</button>
+        </form>
+        <br>
+        Price per item: {{ item.comic.price }} €
       </div>
       <a class="btn btn-sm btn-danger" href="{% url 'cart:remove_from_cart' item.id %}">Remove</a>
     </li>
@@ -18,9 +24,8 @@
 </ul>
 
 {% if cart_items %}
-  <a href="{% url 'cart:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
-  <p>or</p>
-  <a href="{%url 'catalogue:catalogue'%}" class="btn btn-success">Continue shoping</a>
+  <a href="{% url 'cart:checkout' %}" class="btn btn-success mt-4">Proceed to Checkout</a>
+  <p class="mt-2">or</p>
+  <a href="{% url 'catalogue:catalogue' %}" class="btn btn-outline-secondary">Continue Shopping</a>
 {% endif %}
 {% endblock %}
-
