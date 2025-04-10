@@ -3,18 +3,63 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+    <div class="col-12 col-lg-8">
       <div class="card shadow-sm mt-4">
         <div class="card-body text-center">
-          <h2 class="card-title">Welcome, <strong>{{ user.username }}</h2>
-          <p class="card-text">This is your Profile</strong>!</p>
-          <p class="card-text">Do you want to logout?</p>
+          <h2 class="card-title">Welcome, <strong>{{ user.username }}</strong></h2>
+          <p class="card-text">This is your profile dashboard.</p>
+
           <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Logout</button>
           </form>
         </div>
       </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h4>Your Recent Reviews</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for review in recent_reviews %}
+            <li class="list-group-item">
+              <strong>{{ review.comic.title }}</strong> - Rated: {{ review.rating }}/20
+              <p class="mb-0">{{ review.comment }}</p>
+            </li>
+          {% empty %}
+            <li class="list-group-item">You haven’t written any reviews yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h4>Your Recent Orders</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+          {% for order in recent_orders %}
+          <li class="list-group-item">
+            <strong>{{ order.created|date:"M d, Y H:i" }}</strong><br>
+            {% for item in order.items.all %}
+              - {{ item.comic.title }} (x{{ item.quantity }})<br>
+            {% endfor %}
+            <strong>Total:</strong> {{ order.get_total_cost }}€
+          </li>
+          {% empty %}
+            <li class="list-group-item">You haven't placed any orders yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% if user.is_staff and not user.is_superuser %}
+        <div class="text-center mt-4">
+          <a class="btn btn-dark" href="{% url 'accounts:employee' %}">Edit Catalogue</a>
+        </div>
+      {% elif user.is_superuser %}
+        <div class="text-center mt-4">
+          <a href="{% url 'admin:index' %}" class="btn btn-dark">Go to Admin Panel</a>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>

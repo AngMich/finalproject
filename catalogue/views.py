@@ -5,6 +5,8 @@ from .forms import reviews
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
+from .logic import get_recommended_comics
+
 
 
 
@@ -52,6 +54,11 @@ def catalogue_view(request):
 def comic_detail_view(request, id):
     comic = get_object_or_404(ComicBook, pk=id)
     user_review = None
+    recommended = get_recommended_comics(comic)
+    return render(request, 'catalogue/comic_detail.html', {
+        'comic': comic,
+        'recommended_comics': recommended,
+    })
     if request.user.is_authenticated:
         user_review = Review.objects.filter(user=request.user, comic=comic).first()
 
@@ -66,6 +73,7 @@ def add_review(request, comic_id):
 
     # Prevent duplicate reviews
     if Review.objects.filter(user=request.user, comic=comic).exists():
+        messages.warning(request, "You have already submitted a review for this comic.")
         return redirect('catalogue:comic_detail', id=comic.id)
 
     if request.method == 'POST':
@@ -75,6 +83,7 @@ def add_review(request, comic_id):
             review.comic = comic
             review.user = request.user
             review.save()
+            messages.success(request, "Review submitted successfully!")
             return redirect('catalogue:comic_detail', id=comic.id)
     else:
         form = reviews()
@@ -83,10 +92,10 @@ def add_review(request, comic_id):
         'form': form,
         'comic': comic,
     })
-@staff_member_required
+@login_required
 def delete_review(request, review_id):
     review = get_object_or_404(Review, id=review_id)
+
     comic_id = review.comic.id
     review.delete()
-    messages.success(request, "Review deleted successfully.")
     return redirect('catalogue:comic_detail', id=comic_id)

@@ -14,11 +14,9 @@ class ComicBookForm(forms.ModelForm):
             'stock',
             'image',
             'description',
-            'is_featured',
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
-            'is_featured': forms.CheckboxInput(),
         }
 
 

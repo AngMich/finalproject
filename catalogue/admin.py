@@ -13,8 +13,8 @@ class PublisherAdmin(admin.ModelAdmin):
 
 @admin.register(ComicBook)
 class ComicBookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'author', 'price', 'stock', 'is_featured')
-    list_filter = ('is_featured', 'category', 'publisher')
+    list_display = ('id', 'title', 'author', 'price', 'stock')
+    list_filter = ('category', 'publisher')
     search_fields = ('title', 'author')
 
 @admin.register(Review)

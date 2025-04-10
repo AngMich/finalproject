@@ -24,7 +24,6 @@ class ComicBook(models.Model):
     stock = models.IntegerField()
     image = models.ImageField(upload_to='comics/')
     description = models.TextField()
-    is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
