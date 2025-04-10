@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -27,3 +28,21 @@ class ComicBook(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if not reviews.exists():
+            return None
+        return round(sum(r.rating for r in reviews) / reviews.count(), 2)
+
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comic = models.ForeignKey(ComicBook, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveIntegerField()
+    comment = models.TextField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'comic')  
+    def __str__(self):
+        return f"{self.user.username} - {self.comic.title} ({self.rating}/20)"

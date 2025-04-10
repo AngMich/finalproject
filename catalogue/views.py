@@ -1,6 +1,12 @@
-from django.shortcuts import render, get_object_or_404
-from .models import ComicBook, Category, Publisher
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import ComicBook, Category, Publisher, Review
 from django.db.models import Q
+from .forms import reviews
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+
+
 
 def get_descendant_categories(category):
     descendants = [category]
@@ -45,4 +51,42 @@ def catalogue_view(request):
 
 def comic_detail_view(request, id):
     comic = get_object_or_404(ComicBook, pk=id)
-    return render(request, 'catalogue/comic_detail.html', {'comic': comic})
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = Review.objects.filter(user=request.user, comic=comic).first()
+
+    return render(request, 'catalogue/comic_detail.html', {
+        'comic': comic,
+        'user_review': user_review,
+    })
+
+@login_required
+def add_review(request, comic_id):
+    comic = get_object_or_404(ComicBook, id=comic_id)
+
+    # Prevent duplicate reviews
+    if Review.objects.filter(user=request.user, comic=comic).exists():
+        return redirect('catalogue:comic_detail', id=comic.id)
+
+    if request.method == 'POST':
+        form = reviews(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.comic = comic
+            review.user = request.user
+            review.save()
+            return redirect('catalogue:comic_detail', id=comic.id)
+    else:
+        form = reviews()
+
+    return render(request, 'catalogue/add_review.html', {
+        'form': form,
+        'comic': comic,
+    })
+@staff_member_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    comic_id = review.comic.id
+    review.delete()
+    messages.success(request, "Review deleted successfully.")
+    return redirect('catalogue:comic_detail', id=comic_id)

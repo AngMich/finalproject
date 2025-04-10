@@ -13,6 +13,13 @@
       <p><strong>Writer:</strong> {{ comic.author }}</p>
         <p><strong>Price:</strong> {{ comic.price }}€</p>
         <p class="description">{{ comic.description }}</p>
+        {% if user.is_authenticated and not user_review %}
+        <a href="{% url 'catalogue:add_review' comic.id %}" class="btn btn-sm btn-outline-primary">Leave a Review</a>
+        {% endif %}
+
+        {% if comic.average_rating %}
+          <p class="mt-2"><strong>Average Rating:</strong> {{ comic.average_rating }}/20</p>
+        {% endif %}
 
         {% if user.is_authenticated %}
           <form method="post" action="{% url 'cart:add_to_cart' comic.id %}">
@@ -21,6 +28,25 @@
           </form>
         {% else %}
           <p><a href="{% url 'accounts:login' %}">Login</a> to add this comic to your cart.</p>
+        {% endif %}
+        <h3>Reviews</h3>
+        {% if comic.reviews.all %}
+          <ul class="list-group">
+            {% for review in comic.reviews.all %}
+              <li class="list-group-item">
+                <strong>{{ review.user.username }}</strong> rated it <strong>{{ review.rating }}/20</strong><br>
+                {{ review.comment }}
+              </li>
+              {% if user.is_staff %}
+                <form method="post" action="{% url 'catalogue:delete_review' review.id %}" style="margin-left: 10px;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+              {% endif %}
+            {% empty %}
+              <p>No reviews yet. Be the first to review!</p>
+            {% endfor %}
+          </ul>
         {% endif %}
     </div>
   </div>

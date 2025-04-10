@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Publisher, ComicBook
+from .models import Category, Publisher, ComicBook, Review
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -16,3 +16,8 @@ class ComicBookAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'author', 'price', 'stock', 'is_featured')
     list_filter = ('is_featured', 'category', 'publisher')
     search_fields = ('title', 'author')
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'rating', 'comment', 'created')
+    search_fields = ('rating', 'user')
