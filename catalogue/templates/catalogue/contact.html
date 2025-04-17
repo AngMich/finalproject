@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<main class="container my-5">
+  <section class="mb-5">
+    <h2 class="text-center mb-4">Contact Us</h2>
+    <p class="text-center">
+      If you have any questions, suggestions, or inquiries, feel free to reach out to us using the form below.
+    </p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="text-danger small">{{ form.name.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="text-danger small">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.subject.label_tag }}
+        {{ form.subject }}
+        {% if form.subject.errors %}
+          <div class="text-danger small">{{ form.subject.errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.message.label_tag }}
+        {{ form.message }}
+        {% if form.message.errors %}
+          <div class="text-danger small">{{ form.message.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+  </section>
+</main>
+
+{% endblock %}

@@ -16,10 +16,12 @@
         <option value="">All Categories</option>
         {% for category in categories %}
           {% if not category.parent %}
-            <option value="{{ category.id }}">{{ category.name }}</option>
+            <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+              {{ category.name }}</option>
             {% for child in categories %}
               {% if child.parent == category %}
-                <option value="{{ child.id }}">-- {{ child.name }}</option>
+                <option value="{{ child.id }}" {% if request.GET.category == child.id|stringformat:"s" %}selected{% endif %}>
+                  {{ child.name }}</option>
               {% endif %}
             {% endfor %}
           {% endif %}

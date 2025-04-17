@@ -6,8 +6,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from .logic import get_recommended_comics
+from .forms import ContactForm
+from django.contrib import messages
+
+def contact_view(request):
+    form = ContactForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        messages.success(request, "Thank you for reaching out. We'll get back to you soon.")
+        return redirect('catalogue:contact')
+    return render(request, 'catalogue/contact.html', {'form': form})
 
 
+def about_view(request):
+    return render(request, 'catalogue/about.html')
 
 
 def get_descendant_categories(category):
