@@ -33,7 +33,7 @@
         <ul class="list-group list-group-flush">
           {% for order in recent_orders %}
           <li class="list-group-item">
-            <strong>{{ order.created|date:"M d, Y H:i" }}</strong><br>
+            <strong>{{ order.created|date:"M d, Y" }}</strong><br>
             {% for item in order.items.all %}
               - {{ item.comic.title }} (x{{ item.quantity }})<br>
             {% endfor %}
