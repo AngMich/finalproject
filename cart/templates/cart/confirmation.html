@@ -1,4 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
   <h2>Thank you for your purchase {{ user.username }}!</h2>
+  <a href="{% url 'catalogue:catalogue' %}" class="btn btn-outline-secondary">Continue Shopping</a>
 {% endblock %}

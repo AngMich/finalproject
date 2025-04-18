@@ -8,11 +8,6 @@
         <div class="card-body text-center">
           <h2 class="card-title">Welcome, <strong>{{ user.username }}</strong></h2>
           <p class="card-text">This is your profile dashboard.</p>
-
-          <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Logout</button>
-          </form>
         </div>
       </div>
       <div class="card mt-4">
@@ -48,6 +43,13 @@
             <li class="list-group-item">You haven't placed any orders yet.</li>
           {% endfor %}
         </ul>
+      </div>
+      <div class="text-center mt-4">
+        <p>do you want to logout</p>
+        <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
       </div>
 
       {% if user.is_staff and not user.is_superuser %}
